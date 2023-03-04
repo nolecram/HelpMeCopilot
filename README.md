@@ -1,6 +1,6 @@
 # HelpMeCopilot
 <p align="center">
-    <img src=![GHC](1.png) />
+    <img src="https://github.com/nolecram/HelpMeCopilot/blob/main/1.png" />
 </p>
 
 
