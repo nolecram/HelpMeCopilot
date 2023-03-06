@@ -9,3 +9,4 @@ Welcome to a safe sandpit to test Copilot capabilities. Feel free to move add ch
 <p align="center">
     <img src="https://github.com/nolecram/HelpMeCopilot/blob/main/2.png" />
 </p>
+Experiments include: ML Function, Jupyter Notebook, Python simple applications and coding on different frameworks.
