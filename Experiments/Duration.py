@@ -5,10 +5,3 @@ def main():
     minutes = minutes % 60
     print("The movie is", hours, "hours and", minutes, "minutes long.")
 main()
-
-# Build a unit test function to test the main function
-def test():
-
-    assert main() == 1
-    return "pass"
-test()

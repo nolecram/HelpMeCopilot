@@ -5,11 +5,6 @@ def to_binary(n):
 def main():
     n = int(input("Enter a number: "))
     print(to_binary(n))
-# build a unit test function to test the main function
-def test():
-    assert main() == 1
-    return "pass"
-test()
 # Call the main function
 main()
 # Display a joke on python language that I not like
