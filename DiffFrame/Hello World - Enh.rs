@@ -266,3 +266,14 @@ mod formatting {
                    "2 ∠ 90°");
     }
 }
+//! Build a function to count the lines of code in a file.
+//!
+//! This is a simple example of a function that takes a filename as an argument
+//! and returns the number of lines in that file.  It is not a very good
+//! implementation, but it is good enough for our purposes.
+//!
+//! The function is generic over the type of reader, so it can be used with
+//! `File`s, `BufReader`s, and so on.
+
+use std::io::{self, BufRead, Read};
+
