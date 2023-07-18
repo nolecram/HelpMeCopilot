@@ -1,4 +1,1 @@
 document.write("Hello, world!");
-
-
-}
