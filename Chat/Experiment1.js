@@ -34,3 +34,6 @@ function addRange(num) {
     }
  }
  function async
+
+ // Build an array of motnhs in chinese
+ 
