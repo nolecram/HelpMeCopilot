@@ -1,15 +1,26 @@
-document.write("Hello, world!");
+function addrandomnumbers(min)
+{
+    var randnumber = Math.floor(Math.random() * ( - min + 1)) + min;
+    return randnumber;
+}
 
-function addrandomnumbers(min,Max){
-	return Math.floor(Math.random()*(Max-min)+min);
+// Build a test for the previous function
+/**
+ * This function tests the addrandomnumbers function by generating a random number within a given range and checking if it falls within the range.
+ * @returns {string} The result of the test, either "Test Passed" or "Test Failed".
+ */
+function test_addrandomnumbers()
+{
+  var min = 1;
+  var max = 100;
+  var randnumber = addrandomnumbers(min,max);
+  if (randnumber >= min && randnumber <= max)
+  {
+    return "Test Passed";
+  }
+  else
+  {
+    return "Test Failed";
+  }
 }
-// Build a unit test for the previous function
-function test_addrandomnumbers(){
-    var min = 1;
-    var Max = 10;
-    var test = addrandomnumbers(min,Max);
-    if(test >= min && test <= Max){
-        return true;
-    }
-    return false;
-}
+    
