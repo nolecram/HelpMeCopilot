@@ -1,4 +1,4 @@
-# Terraform configuration for deploying NGINX on Azure
+# Terraform configuration for deploying NGINX on Azure with LAMP stack
 
 # Define the provider
 provider "azurerm" {
@@ -49,7 +49,7 @@ resource "azurerm_network_interface" "nginx_nic" {
   }
 }
 
-# Create a virtual machine
+# Create a virtual machine for NGINX and LAMP stack
 resource "azurerm_linux_virtual_machine" "nginx_vm" {
   name                = "nginx-vm"
   resource_group_name = azurerm_resource_group.nginx.name
@@ -72,11 +72,19 @@ resource "azurerm_linux_virtual_machine" "nginx_vm" {
     version   = "latest"
   }
 
-  # Install NGINX
+  # Install NGINX and LAMP stack components
   custom_data = base64encode(<<EOF
 #!/bin/bash
 sudo apt update
-sudo apt install -y nginx
+sudo apt install -y nginx apache2 mysql-server php libapache2-mod-php php-mysql
 EOF
   )
+}
+
+# Reference to LAMP stack module
+module "lamp_stack" {
+  source              = "./modules/lamp_stack"
+  resource_group_name = azurerm_resource_group.nginx.name
+  location            = azurerm_resource_group.nginx.location
+  network_interface_id = azurerm_network_interface.nginx_nic.id
 }
