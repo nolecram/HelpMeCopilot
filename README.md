@@ -1,32 +1,60 @@
 # HelpMeCopilot
-<p align="center">
-    <img src="https://github.com/nolecram/HelpMeCopilot/blob/main/1.png" />
-</p>
-
-
-Welcome to a safe sandpit to test Copilot capabilities. Feel free to move add change anything. Hope you have some fun !!
 
 <p align="center">
-    <img src="https://github.com/nolecram/HelpMeCopilot/blob/main/2.png" />
+    <img src="https://github.com/nolecram/HelpMeCopilot/blob/main/1.png" alt="HelpMeCopilot Image 1" />
 </p>
-Experiments include: ML Function, Jupyter Notebook, Python simple applications and coding on different frameworks.
 
-## Deploying NGINX on Azure using Terraform
+Welcome to HelpMeCopilot, a safe sandpit to test Copilot capabilities. Feel free to move, add, or change anything. Hope you have some fun!
 
-This section details the process of deploying NGINX on Azure using the Terraform configuration file `deploy_nginx_azure.tf`. The Terraform script automates the creation of necessary Azure resources such as Virtual Machines, Networking, and the installation of NGINX. For more information, refer to the `deploy_nginx_azure.tf` file in the repository.
+<p align="center">
+    <img src="https://github.com/nolecram/HelpMeCopilot/blob/main/2.png" alt="HelpMeCopilot Image 2" />
+</p>
 
-## Deploying a LAMP Stack with NGINX on Azure using Terraform
+## Experiments
 
-In addition to deploying NGINX, this repository now supports the deployment of a LAMP (Linux, Apache, MySQL, PHP) stack alongside NGINX on Azure using Terraform. This integration enhances the capabilities of your deployment by adding a dynamic, database-driven web application environment to the robustness of NGINX.
+This repository includes various experiments and projects to explore the capabilities of GitHub Copilot. The experiments are categorized as follows:
 
-To deploy the LAMP stack with NGINX, follow these steps:
+### Machine Learning Functions
+Explore various machine learning functions and algorithms. This includes data preprocessing, model training, and evaluation scripts.
 
-1. Ensure you have Terraform installed and configured for Azure.
-2. Clone this repository and navigate to the directory containing the Terraform scripts.
-3. Update the `deploy_nginx_azure.tf` script to include the LAMP stack module. This step has been automated in the script, but you can review the configuration for understanding.
-4. Run `terraform init` to initialize the Terraform workspace and download necessary providers.
-5. Execute `terraform plan` to review the deployment plan and ensure all resources are correctly configured.
-6. Apply the deployment by running `terraform apply`. Confirm the action when prompted.
-7. Once the deployment is complete, you can access your NGINX server and the LAMP stack applications using the public IP address provided by Azure.
+### Jupyter Notebooks
+Interactive Jupyter Notebooks for data analysis, visualization, and machine learning experiments. These notebooks provide a hands-on approach to learning and experimenting with code.
 
-For detailed configuration options and to customize your deployment, refer to the `modules/lamp_stack` directory which contains the Terraform module for the LAMP stack deployment.
+### Python Simple Applications
+A collection of simple Python applications demonstrating basic programming concepts and functionalities. These applications serve as a foundation for more complex projects.
+
+### Coding on Different Frameworks
+Examples and experiments using different programming frameworks and libraries. This includes web development frameworks, data science libraries, and more.
+
+## Getting Started
+
+To get started with the experiments in this repository, follow these steps:
+
+1. **Clone the Repository**:
+    ```sh
+    git clone https://github.com/nolecram/HelpMeCopilot.git
+    cd HelpMeCopilot
+    ```
+
+2. **Set Up the Environment**:
+    - Ensure you have Python installed.
+    - Install necessary dependencies using `requirements.txt` if available:
+      ```sh
+      pip install -r requirements.txt
+      ```
+
+3. **Explore the Experiments**:
+    - Navigate to the respective directories and run the scripts or notebooks.
+
+## Contributing
+
+Feel free to contribute to this repository by adding new experiments, improving existing code, or fixing bugs. To contribute:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Commit your changes and push to your fork.
+4. Create a pull request with a description of your changes.
+
+---
+
+Enjoy experimenting with GitHub Copilot and happy coding!
