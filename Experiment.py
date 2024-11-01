@@ -1,1 +1,0 @@
-const MONTHS = [Gennaio]
