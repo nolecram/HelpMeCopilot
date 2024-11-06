@@ -1,22 +1,23 @@
-// Step 1: Create a basic structure for the JavaScript program
-function fahrenheitToCelsius(fahrenheit) {
-    return (fahrenheit - 32) * 5 / 9;
+
+// Function to convert hours to seconds
+function hoursToSeconds(hours) {
+    return hours * 3600;
 }
 
-// Step 2: Implement input and output functionality
-// Read an input value for Fahrenheit
-const fahrenheitInput = prompt("Enter temperature in Fahrenheit:");
+// Implement input and output functionality
+// Read an input value for hours
+const hoursInput = prompt("Enter time in hours:");
 
 // Convert the input value to a number
-const fahrenheit = parseFloat(fahrenheitInput);
+const hours = parseFloat(hoursInput);
 
 // Check if the input is a valid number
-if (isNaN(fahrenheit)) {
+if (isNaN(hours)) {
     alert("Please enter a valid number.");
 } else {
     // Call the function and store the result
-    const celsius = fahrenheitToCelsius(fahrenheit);
+    const seconds = hoursToSeconds(hours);
 
-    // Display the converted Celsius value
-    alert(`Temperature in Celsius: ${celsius.toFixed(2)}`);
+    // Display the converted seconds value
+    alert(`Time in seconds: ${seconds}`);
 }
