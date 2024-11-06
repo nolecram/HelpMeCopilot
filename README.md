@@ -26,6 +26,9 @@ A collection of simple Python applications demonstrating basic programming conce
 ### Coding on Different Frameworks
 Examples and experiments using different programming frameworks and libraries. This includes web development frameworks, data science libraries, and more.
 
+### Terraform LAMP Stack Deployment
+This section provides an example of deploying a LAMP stack (Linux, Apache, MySQL, PHP) on Azure using Terraform. The Terraform files for this deployment can be found in the `modules/lamp_stack` directory. This example demonstrates how to define resources, configure security groups, and set up a LAMP stack on an Azure virtual machine.
+
 ## Getting Started
 
 To get started with the experiments in this repository, follow these steps:
