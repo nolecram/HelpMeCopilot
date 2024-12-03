@@ -1,4 +1,12 @@
 
+// Function to display a greeting message
+function displayGreeting() {
+    alert("Welcome to the Hello World program!");
+}
+
+// Call the greeting function
+displayGreeting();
+
 // Function to convert hours to seconds
 function hoursToSeconds(hours) {
     return hours * 3600;
