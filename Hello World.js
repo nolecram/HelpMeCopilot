@@ -1,17 +1,13 @@
-
 // Function to convert hours to seconds
-function hoursToSeconds(hours) {
-    return hours * 3600;
-}
+const hoursToSeconds = hours => hours * 3600;
 
 // Implement input and output functionality
 // Read an input value for hours
 const hoursInput = prompt("Enter time in hours:");
 
-// Convert the input value to a number
-const hours = parseFloat(hoursInput);
+// Convert the input value to a number and check if it's valid
+const hours = Number(hoursInput);
 
-// Check if the input is a valid number
 if (isNaN(hours)) {
     alert("Please enter a valid number.");
 } else {
