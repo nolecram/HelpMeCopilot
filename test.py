@@ -45,9 +45,30 @@ def sell_fruit(gold, inventory):
     inventory[fruit] -= quantity
     return gold, inventory
 
+# Function to handle special events
+def special_event(gold, inventory):
+    event = random.choice(["none", "find_gold", "fruit_spoil", "bonus_fruit"])
+    if event == "find_gold":
+        found_gold = random.randint(5, 15)
+        gold += found_gold
+        print(f"Special Event: You found {found_gold} gold!")
+    elif event == "fruit_spoil":
+        fruit = random.choice(list(inventory.keys()))
+        if inventory[fruit] > 0:
+            spoiled_quantity = random.randint(1, inventory[fruit])
+            inventory[fruit] -= spoiled_quantity
+            print(f"Special Event: {spoiled_quantity} {fruit}(s) spoiled!")
+    elif event == "bonus_fruit":
+        fruit = random.choice(list(inventory.keys()))
+        bonus_quantity = random.randint(1, 5)
+        inventory[fruit] += bonus_quantity
+        print(f"Special Event: You received {bonus_quantity} bonus {fruit}(s)!")
+    return gold, inventory
+
 # Main game loop
 for day in range(1, days + 1):
     display_status(day, gold, inventory)
+    gold, inventory = special_event(gold, inventory)
     action = input("Do you want to buy or sell fruit? (buy/sell): ").lower()
     if action == "buy":
         gold, inventory = buy_fruit(gold, inventory)
