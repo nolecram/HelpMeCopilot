@@ -29,6 +29,9 @@ Examples and experiments using different programming frameworks and libraries. T
 ### Terraform LAMP Stack Deployment
 This section provides an example of deploying a LAMP stack (Linux, Apache, MySQL, PHP) on Azure using Terraform. The Terraform files for this deployment can be found in the `modules/lamp_stack` directory. This example demonstrates how to define resources, configure security groups, and set up a LAMP stack on an Azure virtual machine.
 
+### Port Scanning and Docker Socket Identification
+This section provides an example of a Python script to perform port scanning and identify Docker sockets on a local network. The script scans the local network for open ports and identifies Docker sockets using the `socket` and `docker` libraries.
+
 ## Getting Started
 
 To get started with the experiments in this repository, follow these steps:
@@ -48,6 +51,25 @@ To get started with the experiments in this repository, follow these steps:
 
 3. **Explore the Experiments**:
     - Navigate to the respective directories and run the scripts or notebooks.
+
+## Running the Port Scanning and Docker Socket Identification Script
+
+To run the `port_scan.py` script, follow these steps:
+
+1. **Install Dependencies**:
+    Ensure you have the required dependencies installed:
+    ```sh
+    pip install docker
+    ```
+
+2. **Run the Script**:
+    Execute the `port_scan.py` script:
+    ```sh
+    python port_scan.py
+    ```
+
+3. **View the Results**:
+    The script will output the open ports and identified Docker sockets on the local network.
 
 ## Contributing
 
