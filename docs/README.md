@@ -12,6 +12,14 @@ Welcome to **HelpMeCopilot**, a sandbox environment to explore and test the capa
 
 ---
 
+## Badges
+
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Contributions](https://img.shields.io/badge/contributions-welcome-orange)
+
+---
+
 ## Table of Contents
 
 - [Experiments](#experiments)
@@ -58,8 +66,13 @@ This repository includes various experiments and projects to explore the capabil
 
 ## Getting Started
 
-To get started with the experiments in this repository, follow these steps:
+### Prerequisites
+- Python 3.x
+- Node.js
+- Terraform (for LAMP stack deployment)
+- Jupyter Notebook (for interactive notebooks)
 
+### Steps
 1. **Clone the Repository**:
     ```sh
     git clone https://github.com/nolecram/HelpMeCopilot.git
@@ -86,6 +99,13 @@ Feel free to contribute to this repository by adding new experiments, improving 
 2. Create a new branch for your feature or bug fix.
 3. Commit your changes and push to your fork.
 4. Create a pull request with a description of your changes.
+
+---
+
+## External Resources
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
+- [Python Official Documentation](https://docs.python.org/3/)
+- [Terraform Documentation](https://www.terraform.io/docs/index.html)
 
 ---
 
