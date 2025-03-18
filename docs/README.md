@@ -1,13 +1,13 @@
 # HelpMeCopilot
 
 <p align="center">
-    <img src="assets/images/1.png" alt="HelpMeCopilot Image 1" />
+    <img src="../assets/images/1.png" alt="HelpMeCopilot Image 1" />
 </p>
 
 Welcome to **HelpMeCopilot**, a sandbox environment to explore and test the capabilities of GitHub Copilot. This repository contains a variety of experiments, projects, and examples across multiple programming languages and frameworks. Dive in, experiment, and have fun!
 
 <p align="center">
-    <img src="assets/images/2.png" alt="HelpMeCopilot Image 2" />
+    <img src="../assets/images/2.png" alt="HelpMeCopilot Image 2" />
 </p>
 
 ---
