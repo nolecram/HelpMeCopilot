@@ -1,0 +1,3 @@
+# Python dependencies
+# Add any additional dependencies here
+pytest
