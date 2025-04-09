@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marriage Excuse Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Marriage Excuse Generator</h1>
+            <p>Need a quick excuse when you mess up? We've got you covered!</p>
+        </header>
+        
+        <div class="excuse-container">
+            <div class="excuse-box">
+                <h2 id="excuse-text">Click a button to generate an excuse</h2>
+                <p id="excuse-category" class="category-tag"></p>
+            </div>
+            
+            <div class="controls">
+                <button id="random-excuse" class="primary-btn">Random Excuse</button>
+                <div class="categories">
+                    <h3>Categories:</h3>
+                    <div id="category-buttons">
+                        <!-- Categories will be loaded here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="add-excuse-section">
+            <h3>Add Your Own Excuse</h3>
+            <div class="form-group">
+                <label for="new-category">Category:</label>
+                <input type="text" id="new-category" placeholder="Enter existing or new category">
+            </div>
+            <div class="form-group">
+                <label for="new-excuse">Excuse:</label>
+                <textarea id="new-excuse" placeholder="Enter your creative excuse"></textarea>
+            </div>
+            <button id="add-excuse-btn" class="secondary-btn">Add Excuse</button>
+            <p id="add-status" class="status-message"></p>
+        </div>
+        
+        <footer>
+            <p>Disclaimer: Use these excuses at your own risk. We are not responsible for any relationship consequences!</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
