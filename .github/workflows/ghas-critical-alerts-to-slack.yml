@@ -1,0 +1,288 @@
+name: Critical GHAS Security Alerts to Slack
+
+on:
+  workflow_dispatch:  # For manual triggering
+  schedule:
+    - cron: '0 9 * * 1'  # Run every Monday at 9:00 AM UTC
+    
+  # We'll use workflow_run to process security events
+
+jobs:
+  # Run a daily check or on manual trigger
+  check-critical-alerts:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Get Critical Dependabot alerts
+      - name: Get Critical Dependabot Alerts
+        id: critical-dependabot
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = context.repo;
+            try {
+              const alerts = await github.rest.dependabot.listAlertsForRepo({
+                owner: repo.owner,
+                repo: repo.name,
+                state: 'open'
+              });
+              
+              // Filter for critical alerts only
+              const criticalAlerts = alerts.data.filter(alert => 
+                alert.security_vulnerability && 
+                alert.security_vulnerability.severity === 'critical'
+              );
+              
+              if (criticalAlerts.length === 0) {
+                console.log('No open critical Dependabot alerts found');
+                return;
+              }
+              
+              const alertDetails = criticalAlerts.map(alert => ({
+                package: alert.dependency.package.name,
+                severity: 'CRITICAL',
+                url: alert.html_url,
+                created: alert.created_at,
+                manifest: alert.dependency.manifest_path,
+                description: alert.security_advisory.summary
+              }));
+              
+              // Format a nice message for Slack
+              let message = `:warning: *${criticalAlerts.length} CRITICAL Dependabot Security Alerts*\n\n`;
+              
+              for (const alert of alertDetails) {
+                message += `*Package:* ${alert.package}\n`;
+                message += `*Manifest:* ${alert.manifest}\n`;
+                message += `*Description:* ${alert.description}\n`;
+                message += `*URL:* ${alert.url}\n\n`;
+              }
+              
+              core.setOutput('message', message);
+              core.setOutput('has_alerts', 'true');
+            } catch (error) {
+              console.log(`Error getting Dependabot alerts: ${error}`);
+              core.setOutput('has_alerts', 'false');
+            }
+      
+      # Get Secret scanning alerts - all considered critical
+      - name: Get Critical Secret Scanning Alerts
+        id: critical-secrets
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = context.repo;
+            try {
+              const alerts = await github.rest.secretScanning.listAlertsForRepo({
+                owner: repo.owner,
+                repo: repo.name,
+                state: 'open'
+              });
+              
+              if (alerts.data.length === 0) {
+                console.log('No open Secret scanning alerts found');
+                return;
+              }
+              
+              const alertDetails = alerts.data.map(alert => ({
+                secret_type: alert.secret_type,
+                url: alert.html_url,
+                created: alert.created_at,
+                location: alert.location?.path || 'unknown location'
+              }));
+              
+              // Format a nice message for Slack
+              let message = `:lock: *${alerts.data.length} CRITICAL Secret Scanning Alerts*\n\n`;
+              
+              for (const alert of alertDetails) {
+                message += `*Secret Type:* ${alert.secret_type}\n`;
+                message += `*Location:* ${alert.location}\n`;
+                message += `*URL:* ${alert.url}\n\n`;
+              }
+              
+              core.setOutput('message', message);
+              core.setOutput('has_alerts', 'true');
+            } catch (error) {
+              console.log(`Error getting Secret Scanning alerts: ${error}`);
+              core.setOutput('has_alerts', 'false');
+            }
+
+      # Send to Slack (Critical Dependabot alerts)
+      - name: Send Critical Dependabot Alerts to Slack
+        if: steps.critical-dependabot.outputs.has_alerts == 'true'
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "CRITICAL Dependabot Security Alerts",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🔴 CRITICAL Dependabot Security Alerts",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.critical-dependabot.outputs.message }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      # Send to Slack (Secret scanning alerts)
+      - name: Send Secret Scanning Alerts to Slack
+        if: steps.critical-secrets.outputs.has_alerts == 'true'
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "CRITICAL Secret Scanning Alerts",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🔴 CRITICAL Secret Scanning Alerts",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.critical-secrets.outputs.message }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  # Trigger on push to process security events real-time
+  monitor-security-events:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Check for Recent Critical Security Events
+        id: recent-critical-events
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = context.repo;
+            const timeWindow = new Date();
+            timeWindow.setHours(timeWindow.getHours() - 1); // Check last hour
+            
+            let hasEvents = false;
+            let message = "🔴 *CRITICAL Security Events Detected*\n\n";
+            
+            // Check Dependabot alerts
+            try {
+              const dependabotAlerts = await github.rest.dependabot.listAlertsForRepo({
+                owner: repo.owner,
+                repo: repo.name,
+                state: 'open'
+              });
+              
+              const recentCritical = dependabotAlerts.data.filter(alert => 
+                alert.security_vulnerability?.severity === 'critical' &&
+                new Date(alert.created_at) > timeWindow
+              );
+              
+              if (recentCritical.length > 0) {
+                hasEvents = true;
+                message += `*${recentCritical.length} New Critical Dependabot Alerts*\n`;
+                
+                for (const alert of recentCritical) {
+                  message += `- Package: ${alert.dependency.package.name}, Manifest: ${alert.dependency.manifest_path}\n`;
+                  message += `  Details: ${alert.html_url}\n`;
+                }
+                message += "\n";
+              }
+            } catch (error) {
+              console.log(`Error checking Dependabot alerts: ${error}`);
+            }
+            
+            // Check Secret scanning alerts
+            try {
+              const secretAlerts = await github.rest.secretScanning.listAlertsForRepo({
+                owner: repo.owner,
+                repo: repo.name,
+                state: 'open'
+              });
+              
+              const recentSecrets = secretAlerts.data.filter(alert => 
+                new Date(alert.created_at) > timeWindow
+              );
+              
+              if (recentSecrets.length > 0) {
+                hasEvents = true;
+                message += `*${recentSecrets.length} New Secret Scanning Alerts*\n`;
+                
+                for (const alert of recentSecrets) {
+                  message += `- Type: ${alert.secret_type}, Path: ${alert.location?.path || 'unknown'}\n`;
+                  message += `  Details: ${alert.html_url}\n`;
+                }
+              }
+            } catch (error) {
+              console.log(`Error checking Secret Scanning alerts: ${error}`);
+            }
+            
+            if (hasEvents) {
+              core.setOutput('has_events', 'true');
+              core.setOutput('message', message);
+            } else {
+              core.setOutput('has_events', 'false');
+            }
+      
+      - name: Send Critical Events to Slack
+        if: steps.recent-critical-events.outputs.has_events == 'true'
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "CRITICAL Security Events",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🔴 CRITICAL Security Events Detected",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.recent-critical-events.outputs.message }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Repository:* ${{ github.repository }}\n*Ref:* ${{ github.ref }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

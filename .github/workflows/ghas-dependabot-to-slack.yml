@@ -1,0 +1,197 @@
+name: Critical GHAS Secrets and Dependabot Alerts to Slack
+
+on:
+  workflow_dispatch:  # For manual triggering
+  schedule:
+    - cron: '0 9 * * 1'  # Run every Monday at 9:00 AM UTC
+  
+  # GitHub security events - for dependabot and code scanning
+  repository_vulnerability_alert:
+    types: [create, reopen]
+  
+  # Secret scanning alerts
+  secret_scanning_alert:
+    types: [created, reopened]
+
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Get Dependabot alerts
+      - name: Get Dependabot Alerts
+        if: github.event_name == 'dependabot' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        id: get-dependabot-alerts
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = context.repo;
+            const alerts = await github.rest.dependabot.listAlertsForRepo({
+              owner: repo.owner,
+              repo: repo.name,
+              state: 'open'
+            });
+            
+            if (alerts.data.length === 0) {
+              console.log('No open Dependabot alerts found');
+              return;
+            }
+            
+            const alertDetails = alerts.data.map(alert => {
+              return {
+                package: alert.dependency.package.name,
+                severity: alert.security_vulnerability.severity,
+                url: alert.html_url,
+                created: alert.created_at,
+                manifest: alert.dependency.manifest_path,
+                description: alert.security_advisory.summary
+              };
+            });
+            
+            core.setOutput('alerts', JSON.stringify(alertDetails));
+            core.setOutput('count', alertDetails.length);
+      
+      # Get Secret scanning alerts
+      - name: Get Secret Scanning Alerts
+        if: github.event_name == 'secret_scanning_alert' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        id: get-secret-alerts
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = context.repo;
+            const alerts = await github.rest.secretScanning.listAlertsForRepo({
+              owner: repo.owner,
+              repo: repo.name,
+              state: 'open'
+            });
+            
+            if (alerts.data.length === 0) {
+              console.log('No open Secret scanning alerts found');
+              return;
+            }
+            
+            const alertDetails = alerts.data.map(alert => {
+              return {
+                secret_type: alert.secret_type,
+                url: alert.html_url,
+                created: alert.created_at,
+                location: `${alert.secret_type} in ${alert.location?.path || 'unknown location'}`
+              };
+            });
+            
+            core.setOutput('secrets', JSON.stringify(alertDetails));
+            core.setOutput('count', alertDetails.length);
+
+      # Send to Slack (Dependabot alerts)
+      - name: Send Dependabot Alerts to Slack
+        if: steps.get-dependabot-alerts.outputs.count > 0
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": ":warning: *Dependabot Security Alerts*",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "📦 Dependabot Security Alerts",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*${{ steps.get-dependabot-alerts.outputs.count }}* open vulnerability alerts in repository *${{ github.repository }}*"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ format('{0}', fromJSON(steps.get-dependabot-alerts.outputs.alerts).map(a => `*Package:* ${a.package}\n*Severity:* ${a.severity}\n*Manifest:* ${a.manifest}\n*Description:* ${a.description}\n*URL:* ${a.url}\n`).join('\n---\n')) }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      # Send to Slack (Secret scanning alerts)
+      - name: Send Secret Scanning Alerts to Slack
+        if: steps.get-secret-alerts.outputs.count > 0
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": ":lock: *Secret Scanning Alerts*",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🔐 Secret Scanning Alerts",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*${{ steps.get-secret-alerts.outputs.count }}* exposed secrets in repository *${{ github.repository }}*"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ format('{0}', fromJSON(steps.get-secret-alerts.outputs.secrets).map(s => `*Secret Type:* ${s.secret_type}\n*Location:* ${s.location}\n*URL:* ${s.url}\n`).join('\n---\n')) }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      # For direct event triggers  
+      - name: Send Direct Event to Slack
+        if: github.event_name == 'dependabot' || github.event_name == 'secret_scanning_alert'
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "${{ github.event_name == 'dependabot' && '📦 New Dependabot Alert' || '🔐 New Secret Scanning Alert' }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ github.event_name == 'dependabot' && '📦 New Dependabot Alert' || '🔐 New Secret Scanning Alert' }}",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Repository:* ${{ github.repository }}\n*URL:* ${{ github.event.alert.html_url || github.event.alert_url || 'See GitHub Security tab for details' }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
