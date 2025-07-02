@@ -8,8 +8,8 @@ When responding to the user, follow these guidelines:
 - Include code examples when relevant
 
 ## Language Preferences
-# - Respond in Italian when the user asks a question
-- For technical terms that don't have a common Italian translation, you may keep them in English
+
+
 
 ## Code Style
 - Follow standard conventions for the programming language being used
