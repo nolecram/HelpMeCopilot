@@ -22,4 +22,8 @@ if __name__ == '__main__':
     print("Starting Weather App...")
     print("Open your browser and navigate to: http://localhost:5000")
     print("Press Ctrl+C to stop the server")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    
+    # Only enable debug mode in development environment
+    import os
+    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    app.run(debug=debug_mode, host='0.0.0.0', port=5000)

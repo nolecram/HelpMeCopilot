@@ -139,35 +139,66 @@ document.addEventListener('DOMContentLoaded', () => {
         const feelsLike = Math.round(data.main.feels_like);
         const weatherIcon = getWeatherIcon(data.weather[0].main);
         
-        weatherInfo.innerHTML = `
-            <div class="weather-main">
-                <div class="weather-card">
-                    <div class="weather-icon">${weatherIcon}</div>
-                    <div class="city-name">${cityName}, ${country}</div>
-                    <div class="temperature">${temperature}°C</div>
-                    <div class="description">${description}</div>
-                </div>
-            </div>
+        // Create elements safely to prevent XSS
+        weatherInfo.innerHTML = '';
+        
+        const weatherMain = document.createElement('div');
+        weatherMain.className = 'weather-main';
+        
+        const weatherCard = document.createElement('div');
+        weatherCard.className = 'weather-card';
+        
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'weather-icon';
+        iconDiv.textContent = weatherIcon;
+        
+        const cityDiv = document.createElement('div');
+        cityDiv.className = 'city-name';
+        cityDiv.textContent = `${cityName}, ${country}`;
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.className = 'temperature';
+        tempDiv.textContent = `${temperature}°C`;
+        
+        const descDiv = document.createElement('div');
+        descDiv.className = 'description';
+        descDiv.textContent = description;
+        
+        weatherCard.appendChild(iconDiv);
+        weatherCard.appendChild(cityDiv);
+        weatherCard.appendChild(tempDiv);
+        weatherCard.appendChild(descDiv);
+        weatherMain.appendChild(weatherCard);
+        
+        const weatherDetails = document.createElement('div');
+        weatherDetails.className = 'weather-details';
+        
+        const details = [
+            { label: 'Feels like', value: `${feelsLike}°C` },
+            { label: 'Humidity', value: `${humidity}%` },
+            { label: 'Wind Speed', value: `${windSpeed} m/s` },
+            { label: 'Pressure', value: `${pressure} hPa` }
+        ];
+        
+        details.forEach(detail => {
+            const detailItem = document.createElement('div');
+            detailItem.className = 'detail-item';
             
-            <div class="weather-details">
-                <div class="detail-item">
-                    <div class="detail-label">Feels like</div>
-                    <div class="detail-value">${feelsLike}°C</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Humidity</div>
-                    <div class="detail-value">${humidity}%</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Wind Speed</div>
-                    <div class="detail-value">${windSpeed} m/s</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Pressure</div>
-                    <div class="detail-value">${pressure} hPa</div>
-                </div>
-            </div>
-        `;
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'detail-label';
+            labelDiv.textContent = detail.label;
+            
+            const valueDiv = document.createElement('div');
+            valueDiv.className = 'detail-value';
+            valueDiv.textContent = detail.value;
+            
+            detailItem.appendChild(labelDiv);
+            detailItem.appendChild(valueDiv);
+            weatherDetails.appendChild(detailItem);
+        });
+        
+        weatherInfo.appendChild(weatherMain);
+        weatherInfo.appendChild(weatherDetails);
         
         // Add animation
         weatherInfo.classList.add('animate-in');
@@ -206,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function showError(message) {
-        errorText.textContent = message;
+        errorText.textContent = message; // Use textContent instead of innerHTML to prevent XSS
         errorMessage.style.display = 'block';
         hideLoading();
     }
