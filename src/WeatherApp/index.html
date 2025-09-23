@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Daily Weather Report</h1>
+            <p>Get the current weather conditions for any city</p>
+        </header>
+        
+        <div class="weather-container">
+            <div class="search-section">
+                <div class="search-box">
+                    <input type="text" id="city-input" placeholder="Enter city name..." />
+                    <button id="search-btn" class="primary-btn">Get Weather</button>
+                </div>
+                <button id="location-btn" class="secondary-btn">Use My Location</button>
+            </div>
+            
+            <div class="weather-display" id="weather-display">
+                <div class="weather-info" id="weather-info">
+                    <h2>Enter a city name to see the weather</h2>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Getting weather data...</p>
+            </div>
+            
+            <div class="error-message" id="error-message" style="display: none;">
+                <p id="error-text"></p>
+            </div>
+        </div>
+        
+        <div class="features-section">
+            <h3>Features</h3>
+            <ul>
+                <li>Current temperature and weather conditions</li>
+                <li>Humidity and wind speed information</li>
+                <li>Location-based weather using GPS</li>
+                <li>Search by city name</li>
+                <li>Responsive design for all devices</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Weather data provided by OpenWeatherMap API</p>
+        </footer>
+    </div>
+    
+    <script src="static/js/script.js"></script>
+</body>
+</html>

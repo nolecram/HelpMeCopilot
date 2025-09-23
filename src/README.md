@@ -12,3 +12,4 @@ This directory contains the source code for various examples and experiments. Su
 - `Ruby_Examples/`: Ruby programming examples.
 - `SybaseDB/`: Database interaction examples for Sybase.
 - `TestDrivenDev/`: Test-driven development examples.
+- `WeatherApp/`: A responsive JavaScript weather application with Flask backend.
