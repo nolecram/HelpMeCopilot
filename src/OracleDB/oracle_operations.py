@@ -1,8 +1,8 @@
 """
-Oracle Database Connection Example using cx_Oracle
+Oracle Database Connection Example using oracledb
 
 This example demonstrates how to connect to an Oracle database and perform
-basic CRUD operations using Python and cx_Oracle (oracledb) library.
+basic CRUD operations using Python and the oracledb library.
 
 Prerequisites:
     pip install oracledb
