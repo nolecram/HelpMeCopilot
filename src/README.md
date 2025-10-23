@@ -9,6 +9,7 @@ This directory contains the source code for various examples and experiments. Su
 - `ICA_Azure_AWS/`: Infrastructure as Code examples for Azure and AWS.
 - `Legacy/`: Legacy code examples for compatibility testing.
 - `ML_Experiments/`: Machine learning experiment templates.
+- `OracleDB/`: Database interaction examples for Oracle Database.
 - `Ruby_Examples/`: Ruby programming examples.
 - `SybaseDB/`: Database interaction examples for Sybase.
 - `TestDrivenDev/`: Test-driven development examples.
