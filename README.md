@@ -81,9 +81,10 @@ ls
 ## 📂 Project Categories
 
 ### Applications
-Located in `src/applications/`, these are ready-to-run standalone tools:
+Located in `src/`, these are ready-to-run standalone tools:
 - **chocolate_cake_recipes.py** - Recipe management application
 - **temperature_converter.py** - Unit conversion utility
+- **event_attendants_tracker.py** - Event attendants tracking system with check-in/check-out
 - **excuse_generator/** - Web-based excuse generator with Flask
 
 ### Examples

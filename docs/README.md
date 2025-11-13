@@ -49,8 +49,11 @@ This repository includes various experiments and projects to explore the capabil
 
 ### Python Simple Applications
 - A collection of simple Python applications demonstrating basic programming concepts and functionalities.
+- **chocolate_cake_recipes.py** - Recipe management application with search functionality
+- **event_attendants_tracker.py** - Event attendants tracking system with check-in/check-out capabilities ([Documentation](EVENT_ATTENDANTS_TRACKER.md))
+- **temperature_converter.py** - Unit conversion utility
 - These applications serve as a foundation for more complex projects.
-- Files are located in the [`Experiments`](src/Experiments/) directory.
+- Files are located in the [`src`](../src/) directory.
 
 ### Coding on Different Frameworks
 - Examples and experiments using different programming frameworks and libraries.
