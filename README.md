@@ -127,6 +127,7 @@ pytest tests/test_TestA.py
 
 - **[SETUP.md](docs/SETUP.md)** - Detailed setup instructions
 - **[PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** - Comprehensive directory guide
+- **[CUSTOM_AGENTS.md](docs/CUSTOM_AGENTS.md)** - GitHub Copilot custom agents guide
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history
 
@@ -150,6 +151,14 @@ This repository is designed to work well with GitHub Copilot. Some great ways to
 - Generate documentation and comments
 - Suggest refactoring improvements
 - Create new examples and variants
+
+### 🤖 Custom Copilot Agents
+
+This repository includes specialized custom agents:
+- **SRE Agent** - Expert guidance for reliability, security, and operational excellence
+- **Italian Commenting Agent** - Add Italian language code documentation
+
+See **[CUSTOM_AGENTS.md](docs/CUSTOM_AGENTS.md)** for detailed information on using these agents.
 
 ---
 
